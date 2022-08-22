@@ -1,0 +1,9 @@
+<h1>Iterations</h1>
+<ul>
+    {% for iteration in object_list %}
+    <li>{{ iteration.title }} - {{ iteration.is_active }}</li>
+    <li><a href="{% url 'dashboard' pk=iteration.pk %}">Details</a></li>
+    {% empty %}
+    <li>No iteration yet.</li>
+    {% endfor %}
+</ul>

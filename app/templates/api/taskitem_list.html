@@ -1,0 +1,8 @@
+<h1>Iterations</h1>
+<ul>
+    {% for taskItem in object_list %}
+    <li>{{ taskItem.task.title }} - {{ taskItem.effortitem_set.all }}</li>
+    {% empty %}
+    <li>No TaskItem yet.</li>
+    {% endfor %}
+</ul>

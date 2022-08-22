@@ -1,0 +1,18 @@
+{% load custom %}
+<h1>{{ iteration.title }}</h1>
+<h2>{{ iteration.total_effort }}</h2>
+<ul>
+    {% for taskItem in task_items %}
+    <li>{{ taskItem.task.title }} - {{ taskItem.effortitem_set.all }}</li>
+        {% for effortItem in taskItem.effortitem_set.all %}
+            <p>{{ effortItem.member.name }} - {{ effortItem.effort }} / {{ effort_counts_pk|get_item:effortItem.member.pk }}</p>
+        {% endfor %}
+    {% empty %}
+    <li>No TaskItem yet.</li>
+    {% endfor %}
+</ul>
+
+<h1>Total efforts </h1>
+{% for name, count in effort_counts.items %}
+<li>{{ name }} - {{ count }}</li>
+{% endfor %}
