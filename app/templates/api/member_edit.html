@@ -1,0 +1,23 @@
+{% extends 'api/base.html' %}
+{% block content %}
+
+<div class="container" style="width:50%">
+
+
+    {% if form.name.strip %}
+    <h2>Edit Member</h2>
+    {% else %}
+    <h2>Add Member</h2>
+    {% endif %}
+
+    {% load crispy_forms_tags %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+
+{% endblock %}

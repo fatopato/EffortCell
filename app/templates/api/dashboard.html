@@ -1,4 +1,6 @@
+{% extends 'api/base.html' %}
 {% load custom %}
+{% block content %}
 <h1>{{ iteration.title }}</h1>
 <h2>{{ iteration.total_effort }}</h2>
 <ul>
@@ -7,6 +9,8 @@
         {% for effortItem in taskItem.effortitem_set.all %}
             <p>{{ effortItem.member.name }} - {{ effortItem.effort }} / {{ effort_counts_pk|get_item:effortItem.member.pk }}</p>
         {% endfor %}
+
+        <a href="{% url 'add_to_task_item' task_item_pk=taskItem.pk member_pk=2 effort=1  %}">Add</a>
     {% empty %}
     <li>No TaskItem yet.</li>
     {% endfor %}
@@ -16,3 +20,4 @@
 {% for name, count in effort_counts.items %}
 <li>{{ name }} - {{ count }}</li>
 {% endfor %}
+{% endblock %}
