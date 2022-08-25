@@ -3,11 +3,23 @@
 {% block content %}
 <h1>{{ iteration.title }}</h1>
 <h2>{{ iteration.total_effort }}</h2>
+
+<ul>
+{% for name, values in effort_counts.items %}
+    <li style="display: inline-block">
+        <div id="userProfile_{{values.1}}" class="profileImage" title="{{name}} - effort: {{values.0}}">{{ name.0|upper }}</div>
+    </li>
+{% endfor %}
+</ul>
+
 <ul>
     {% for taskItem in task_items %}
-    <li>{{ taskItem.task.title }} - {{ taskItem.effortitem_set.all }}</li>
+    <li style="display: inline-block">{{ taskItem.title }}</li>
         {% for effortItem in taskItem.effortitem_set.all %}
-            <p>{{ effortItem.member.name }} - {{ effortItem.effort }} / {{ effort_counts_pk|get_item:effortItem.member.pk }}</p>
+<!--            <p>{{ effortItem.member.name }} - {{ effortItem.effort }} / {{ effort_counts_pk|get_item:effortItem.member.pk }}</p>-->
+            <li style="display: inline-block">
+                <div id="userProfile_{{effortItem.member.pk}}" class="profileImage" title="{{effortItem.member.name}} - effort: {{ effortItem.effort }}">{{effortItem.member.name.0|upper}}</div>
+            </li>
         {% endfor %}
 
         <a href="{% url 'add_to_task_item' task_item_pk=taskItem.pk member_pk=2 effort=1  %}">Add</a>
@@ -16,8 +28,28 @@
     {% endfor %}
 </ul>
 
-<h1>Total efforts </h1>
-{% for name, count in effort_counts.items %}
-<li>{{ name }} - {{ count }}</li>
-{% endfor %}
+<script>
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    var colorMap = {};
+    var allProfileImgs = document.querySelectorAll(`[id^="userProfile_"]`);
+    var currColor;
+    console.log(allProfileImgs)
+    for (var i = 0; i < allProfileImgs.length; i++) {
+        if (allProfileImgs[i].id in colorMap){
+            currColor = colorMap[allProfileImgs[i].id];
+        }else {
+            currColor = getRandomColor();
+            colorMap[allProfileImgs[i].id] = currColor;
+        }
+        allProfileImgs[i].style.background = currColor;
+    }
+</script>
 {% endblock %}

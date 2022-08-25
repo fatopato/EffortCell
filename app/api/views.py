@@ -79,7 +79,7 @@ def dashboard(request, pk):
     all_members = Member.objects.all()
     for member in all_members:
         total_effort = get_total_member_effort(task_items, member.pk)
-        effort_counts[member.name] = total_effort
+        effort_counts[member.name] = [total_effort, member.pk]
         effort_counts_pk[member.pk] = total_effort
 
     print(effort_counts)
