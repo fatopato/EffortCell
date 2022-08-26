@@ -1,32 +1,82 @@
 {% extends 'api/base.html' %}
 {% load custom %}
 {% block content %}
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        console.log("Started")
+
+        $("#create-member").modalForm({
+            formURL: "{% url 'member_create2' %}"
+        });
+
+    });
+</script>
+
+<div class="iteration-container">
+    <div class="iteration-header">
+        <div class="iteration-name">
+            <span class="iteration-readonly">{{ iteration.title }}</span>
+        </div>
+        <div class="iteration-issue-count">Total {{ iteration.total_issues }} Task(s)</div>
+        {% if iteration.is_active %}
+        <span class="iteration-control-active">Active</span>
+        {% endif %}
+        <div class="iteration-info">
+            <div class="assigned-member-stats">
+                {% for name, values in effort_counts.items %}
+                <span id="userProfile_{{values.1}}" class="profileImage" title="{{name}} - effort: {{values.0}}">{{ name.0|upper }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="iteration-dates">
+                <div class="iteration-date" style="padding-left: 20px; padding-right: 10px">
+                    <span class="iteration-readonly">{{iteration.start_date}} - {{iteration.end_date}}</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="task-container">
+        <div class="task-display-container">
+            <div class="effort-item-container">
+                {% for taskItem in task_items %}
+                <div class="effort-item-content">
+                    <div class="effort-item-row">
+<!--                        <span class="task-item-type"><i title="Development" class="fa-regular fa-eye"></i></i></span>-->
+                        <div class="task-item-title" title="{{taskItem.title}}">
+                            <span>{{taskItem.title}}</span>
+                        </div>
+                        {% for effortItem in taskItem.effortitem_set.all %}
+                        <div class="effort-item-member">
+
+                            <div id="userProfile_{{effortItem.member.pk}}" class="profileImage" title="{{effortItem.member.name}} - effort: {{effortItem.effort}}">{{ effortItem.member.name.0|upper }}</div>
+
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<i class="fa-regular fa-eye"></i>
+
 <h1>{{ iteration.title }}</h1>
 <h2>{{ iteration.total_effort }}</h2>
 
-<ul>
-{% for name, values in effort_counts.items %}
-    <li style="display: inline-block">
-        <div id="userProfile_{{values.1}}" class="profileImage" title="{{name}} - effort: {{values.0}}">{{ name.0|upper }}</div>
-    </li>
-{% endfor %}
-</ul>
 
-<ul>
-    {% for taskItem in task_items %}
-    <li style="display: inline-block">{{ taskItem.title }}</li>
-        {% for effortItem in taskItem.effortitem_set.all %}
-<!--            <p>{{ effortItem.member.name }} - {{ effortItem.effort }} / {{ effort_counts_pk|get_item:effortItem.member.pk }}</p>-->
-            <li style="display: inline-block">
-                <div id="userProfile_{{effortItem.member.pk}}" class="profileImage" title="{{effortItem.member.name}} - effort: {{ effortItem.effort }}">{{effortItem.member.name.0|upper}}</div>
-            </li>
-        {% endfor %}
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-        <a href="{% url 'add_to_task_item' task_item_pk=taskItem.pk member_pk=2 effort=1  %}">Add</a>
-    {% empty %}
-    <li>No TaskItem yet.</li>
-    {% endfor %}
-</ul>
+<!-- Create book button -->
+<button id="create-member" class="btn btn-primary" type="button" name="button">Create member</button>
 
 <script>
     function getRandomColor() {
@@ -52,4 +102,6 @@
         allProfileImgs[i].style.background = currColor;
     }
 </script>
+
+
 {% endblock %}

@@ -39,6 +39,9 @@ class Iteration(AbstractBaseModel):
     def total_effort(self):
         return sum([effort_item.effort for task_item in self.taskitem_set.all() for effort_item in
                     task_item.effortitem_set.all()])
+    @property
+    def total_issues(self):
+        return len(self.taskitem_set.all())
 
     # def __str__(self):
     #     return self.title

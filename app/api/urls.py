@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import IterationListView, TaskItemList, dashboard, add_to_task_item, MemberCreateView\
-    , MemberListView, MemberUpdateView, IterationUpdateView, IterationCreateView
+    , MemberListView, MemberUpdateView, IterationUpdateView, IterationCreateView, MemberCreateView2
 
 urlpatterns = [
     path('iterations/', IterationListView.as_view(), name='iterations'),
@@ -12,4 +12,5 @@ urlpatterns = [
     path('member-create/', MemberCreateView.as_view(), name='member_create'),
     path('member-update/<pk>/', MemberUpdateView.as_view(), name='member_update'),
     path('members/', MemberListView.as_view(), name='members'),
+    path('member-create2/', MemberCreateView2.as_view(), name='member_create2'),
 ]

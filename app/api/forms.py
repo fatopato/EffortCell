@@ -1,7 +1,8 @@
 from django import forms
 from django.forms import ModelForm
+from bootstrap_modal_forms.forms import BSModalModelForm
 
-from .models import Iteration
+from .models import Iteration, Member
 
 
 class DateInput(forms.DateInput):
@@ -18,3 +19,9 @@ class IterationForm(ModelForm):
             'end_date': DateInput(),
             'user': forms.HiddenInput(),
         }
+
+
+class MemberForm(BSModalModelForm):
+    class Meta:
+        model = Member
+        fields = ('name', 'role')

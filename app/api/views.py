@@ -1,10 +1,13 @@
 from .models import Task, TaskItem, EffortItem, Member, Iteration
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect, reverse
-from .forms import IterationForm
+from bootstrap_modal_forms.generic import BSModalCreateView
+from django.urls import reverse_lazy
+
+from .forms import IterationForm, MemberForm
 
 
 class IterationListView(ListView):
@@ -79,6 +82,7 @@ def dashboard(request, pk):
     all_members = Member.objects.all()
     for member in all_members:
         total_effort = get_total_member_effort(task_items, member.pk)
+        print(member.pk, ": ", total_effort)
         effort_counts[member.name] = [total_effort, member.pk]
         effort_counts_pk[member.pk] = total_effort
 
@@ -100,6 +104,26 @@ def add_to_task_item(request, task_item_pk, member_pk, effort):
     return redirect("dashboard", task_item.iteration.pk)
 
 
+def update_effort(request, effort_pk, effort_val):
+    effort_item = get_object_or_404(EffortItem, pk=effort_pk)
+    effort_item.effort = effort_val
+    return redirect("dashboard", effort_item.task_item.iteration.pk)
+
+
+class EffortItemDeleteView(DeleteView):
+    model = EffortItem
+
+    def get_success_url(self):
+        return redirect(self.request.META.get('HTTP_REFERER'))
+
+
+class MemberCreateView2(BSModalCreateView):
+    template_name = 'api/create_member.html'
+    form_class = MemberForm
+    success_message = 'Success: Member was created.'
+    success_url = reverse_lazy('members')
+
+
 def get_total_member_effort(taskitem_qs, member_pk):
-    task_items = taskitem_qs.filter(effortitem__member__pk=member_pk)
-    return sum([effort_item.effort for task_item in task_items for effort_item in task_item.effortitem_set.all()])
+    return sum([effort_item.effort for task_item in taskitem_qs for effort_item in task_item.effortitem_set.all() if
+                effort_item.member.pk == member_pk])
